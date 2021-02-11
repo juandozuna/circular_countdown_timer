@@ -25,6 +25,9 @@ class CircularCountDownTimer extends StatefulWidget {
 
   /// Countdown duration in Seconds.
   final int duration;
+	
+	///Countdown initial start time.
+	final int intialDurationValue;
 
   /// Width of the Countdown Widget.
   final double width;
@@ -65,6 +68,7 @@ class CircularCountDownTimer extends StatefulWidget {
       @required this.duration,
       @required this.fillColor,
       @required this.color,
+			this.intialDurationValue = 0,
       this.backgroundColor,
       this.isReverse = false,
       this.isReverseAnimation = false,
@@ -83,6 +87,7 @@ class CircularCountDownTimer extends StatefulWidget {
         assert(duration != null),
         assert(fillColor != null),
         assert(color != null),
+				assert(intialDurationValue < duration),
         super(key: key);
 
   @override
@@ -130,6 +135,15 @@ class CircularCountDownTimerState extends State<CircularCountDownTimer>
   void _setController() {
     widget.controller?._state = this;
     widget.controller?._isReverse = widget.isReverse;
+		if (widget.intialDurationValue > 0) {
+			final calculatedDuration = widget.intialDurationValue / widget.duration;
+			if (widget.isReverse) {
+				_controller?.value = 1 - calculatedDuration;
+			} else {
+				_controller?.value = calculatedDuration;
+			}
+			widget.controller?.resume();
+		}
   }
 
   String _getTime(Duration duration) {
